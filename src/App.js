@@ -1,8 +1,15 @@
 import './App.css';
-
+import { useState } from 'react';
 function App() {
+  const [isPower, setIsPower] = useState(false);
+  const handleClick = () => {
+    setIsPower((current) => !current);
+  };
   return (
     <div className="App">
+      <header>
+        <h1>Drum Machine</h1>
+      </header>
       <div className="container" id="drum-machine">
         <div className="display-pad">
           {/* all drum pads are clickable events */}
@@ -81,15 +88,20 @@ function App() {
         </div>
         <div className="display-controls">
           <div className="controls-power">
-            <p>Power</p>
+            <p id="display">Power</p>
             <div className="power-shell">
               {/* stops all html activations */}
-              <div className="power-shell-slider"></div>
+              <div
+                className="power-shell-slider"
+                style={{ float: isPower ? 'left' : 'right' }}
+                onClick={handleClick}
+              ></div>
             </div>
           </div>
           <div className="controls-display">
             {/* displays clickable events */}
-            <p id="display">instrument</p>
+            <h5>Instrument</h5>
+            <p id="display">instrument played</p>
           </div>
         </div>
       </div>

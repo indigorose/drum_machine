@@ -1,41 +1,74 @@
+p {
+  text-align: center;
+}
+
 .container {
-  height: 500px;
-  width: 600px;
+  background-color: rgb(255, 242, 242);
+  height: 400px;
+  width: 750px;
   border: 5px solid orange;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: auto auto;
+  padding: 10px;
+  margin: 200px auto;
 }
 .display-pad {
   border: 2px solid green;
   height: 300px;
   width: 300px;
+  display: grid;
+  grid-template-columns: repeat(3, 3fr);
+  gap: 10px;
+  margin: auto;
 }
 .drum-pad {
   border: 2px solid purple;
-  height: 20px;
-  width: 20px;
+  height: 70px;
+  width: 70px;
+  margin: auto;
+}
+.drum-pad:hover {
+  background-color: aquamarine;
 }
 .display-controls {
   border: 2px solid blue;
-  height: 100px;
-  width: 100px;
+  height: 200px;
+  width: 300px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(1 1fr);
 }
 .controls-power {
   border: 2px solid green;
-  height: 20px;
-  width: 20px;
+  height: 70px;
+  width: 150px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(1 1fr);
+  gap: 10px;
 }
 .power-shell {
   border: 2px solid purple;
-  height: 40px;
-  width: 40px;
+  height: 25px;
+  width: 50px;
+  margin: auto;
 }
 .power-shell-slider {
   border: 2px solid blue;
+  background-color: blue;
   padding: 1px;
   height: 20px;
   width: 20px;
+  float: left;
 }
 .controls-display {
   border: 2px solid orange;
   height: fit-content;
   width: fit-content;
+  margin: auto;
+}
+#display {
+  padding: 0;
+  margin: 0;
 }
