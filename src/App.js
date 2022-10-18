@@ -139,15 +139,33 @@ function App() {
     heaterKit: drumData,
     smoothPianoKit: pianoData,
   };
-  const [isPower, setIsPower] = useState(false);
+  const [volume, setVolume] = useState(1);
+  const [soundType, setSoundType] = useState('heaterKit');
+  const [sounds, setSounds] = useState(audioGroups[soundType]);
+  const [isPower, setIsPower] = useState(true);
   const handleClick = () => {
     setIsPower((current) => !current);
   };
+  const [soundName, setSoundName] = useState('');
 
+  const stop = () => {
+    setIsPower(!isPower);
+  };
+  const handleVolumeChange = (e) => {
+    setVolume(e.target.value);
+  };
+  const setKeyVolume = () => {
+    const audios = sounds.map((sound) => document.getElementById(sound.key));
+    audios.forEach((audio) => {
+      if (audio) {
+        audio.volume = volume;
+      }
+    });
+  };
   const KeyboardKey = ({ play, sound: { key, audio, name, keyCode } }) => {
     const handleKeydown = (event) => {
       if (event.keyCode === keyCode) {
-        play(key);
+        play(key, name);
       }
     };
 
@@ -155,7 +173,7 @@ function App() {
       document.addEventListener('keydown', handleKeydown);
     });
     return (
-      <button className="drum-pad" onClick={() => play(key)}>
+      <button className="drum-pad" onClick={() => play(key, name)}>
         <audio className="clip" id={key} src={audio} />
         <p>
           {name} {key}
@@ -167,23 +185,44 @@ function App() {
   const Keyboard = ({ play, sounds }) => {
     return sounds.map((sound) => <KeyboardKey play={play} sound={sound} />);
   };
-  const [soundType, setSoundType] = useState('heaterKit');
-  const [sounds, setSounds] = useState(audioGroups[soundType]);
 
-  const play = (key) => {
+  const play = (key, sound) => {
+    setSoundName(sound);
     const audio = document.getElementById(key);
     audio.currentTime = 0;
     audio.play();
   };
 
-  const PadControl = ({ changeSounds }) => {
-    <button className="sound-change" onClick={changeSounds}>
-      <p>Change Sound</p>
-    </button>;
+  const PadControl = ({ changeSounds, volume, handleVolumeChange }) => {
+    return (
+      <div className="sound-pad">
+        <input
+          max="1"
+          min="0"
+          step="0.01"
+          type="range"
+          value={volume}
+          onChange={handleVolumeChange}
+        />
+        <button className="sound-change" onClick={changeSounds}>
+          Change Sound
+        </button>
+      </div>
+    );
   };
-  const changeSounds = () => {};
+  const changeSounds = () => {
+    setSoundName('');
+    if (soundType === 'heaterKit') {
+      setSoundType('smoothPianoKit');
+      setSounds(audioGroups.smoothPianoKit);
+    } else {
+      setSoundType('heaterKit');
+      setSounds(audioGroups.heaterKit);
+    }
+  };
   return (
     <div className="App">
+      {setKeyVolume()}
       <header>
         <h1>Drum Machine</h1>
       </header>
@@ -199,18 +238,25 @@ function App() {
               <div
                 className="power-shell-slider"
                 style={{ float: isPower ? 'left' : 'right' }}
-                onClick={handleClick}
+                onClick={() => {
+                  handleClick();
+                  stop();
+                }}
               ></div>
             </div>
           </div>
           <div className="controls-display">
             {/* displays clickable events */}
-            <p id="display">Instrument</p>
-            <p>instrument played</p>
+            <p>Instrument</p>
+            <p id="display">{soundName || soundName[soundType]}</p>
           </div>
           <div className="controls-sound">
             {/* change sound component */}
-            <PadControl changeSounds={changeSounds} />
+            <PadControl
+              volume={volume}
+              handleVolumeChange={handleVolumeChange}
+              changeSounds={changeSounds}
+            />
           </div>
         </div>
       </div>
