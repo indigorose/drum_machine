@@ -1,5 +1,5 @@
 import './App.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 function App() {
   const drumData = [
     {
@@ -7,151 +7,181 @@ function App() {
       name: 'Heater-1',
       audio: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-1.mp3',
       key: 'Q',
-      keyCode: '81',
+      keyCode: 81,
     },
     {
       id: 2,
       name: 'Heater-2',
       audio: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-1.mp3',
       key: 'W',
-      keyCode: '',
+      keyCode: 87,
     },
     {
       id: 3,
       name: 'Heater-3',
       audio: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-3.mp3',
       key: 'E',
-      keyCode: '87',
+      keyCode: 69,
     },
     {
       id: 4,
       name: 'Heater-4',
       audio: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-4_1.mp3',
       key: 'A',
-      keyCode: '65',
+      keyCode: 65,
     },
     {
       id: 5,
       name: 'Clap',
       audio: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-6.mp3',
       key: 'S',
-      keyCode: '83',
+      keyCode: 83,
     },
     {
       id: 6,
       name: 'Open-HH',
       audio: 'https://s3.amazonaws.com/freecodecamp/drums/Dsc_Oh.mp3',
       key: 'D',
-      keyCode: '68',
+      keyCode: 68,
     },
     {
       id: 7,
       name: 'Kick-H',
       audio: 'https://s3.amazonaws.com/freecodecamp/drums/Kick_n_Hat.mp3',
       key: 'Z',
-      keyCode: '90',
+      keyCode: 90,
     },
     {
       id: 8,
       name: 'Kick',
       audio: 'https://s3.amazonaws.com/freecodecamp/drums/RP4_KICK_1.mp3',
       key: 'X',
-      keyCode: '88',
+      keyCode: 88,
     },
     {
       id: 9,
       name: 'Closed-HH',
       audio: 'https://s3.amazonaws.com/freecodecamp/drums/Cev_H2.mp3',
       key: 'C',
-      keyCode: '67',
+      keyCode: 67,
     },
   ];
-  // const pianoData = [
-  //   {
-  //     id: 1,
-  //     keyCode: 81,
-  //     key: 'Q',
-  //     name: 'Chord-1',
-  //     audio: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_1.mp3',
-  //   },
-  //   {
-  //     id: 2,
-  //     keyCode: 87,
-  //     key: 'W',
-  //     name: 'Chord-2',
-  //     audio: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_2.mp3',
-  //   },
-  //   {
-  //     id: 3,
-  //     keyCode: 69,
-  //     key: 'E',
-  //     name: 'Chord-3',
-  //     audio: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_3.mp3',
-  //   },
-  //   {
-  //     id: 4,
-  //     keyCode: 65,
-  //     key: 'A',
-  //     name: 'Shaker',
-  //     audio: 'https://s3.amazonaws.com/freecodecamp/drums/Give_us_a_light.mp3',
-  //   },
-  //   {
-  //     id: 5,
-  //     keyCode: 83,
-  //     key: 'S',
-  //     name: 'Open-HH',
-  //     audio: 'https://s3.amazonaws.com/freecodecamp/drums/Dry_Ohh.mp3',
-  //   },
-  //   {
-  //     id: 6,
-  //     keyCode: 68,
-  //     key: 'D',
-  //     name: 'Closed-HH',
-  //     audio: 'https://s3.amazonaws.com/freecodecamp/drums/Bld_H1.mp3',
-  //   },
-  //   {
-  //     id: 7,
-  //     keyCode: 90,
-  //     key: 'Z',
-  //     name: 'Punchy-Kick',
-  //     audio: 'https://s3.amazonaws.com/freecodecamp/drums/punchy_kick_1.mp3',
-  //   },
-  //   {
-  //     id: 8,
-  //     keyCode: 88,
-  //     key: 'X',
-  //     name: 'Side-Stick',
-  //     audio: 'https://s3.amazonaws.com/freecodecamp/drums/side_stick_1.mp3',
-  //   },
-  //   {
-  //     id: 9,
-  //     keyCode: 67,
-  //     key: 'C',
-  //     name: 'Snare',
-  //     audio: 'https://s3.amazonaws.com/freecodecamp/drums/Brk_Snr.mp3',
-  //   },
-  // ];
+  const pianoData = [
+    {
+      id: 1,
+      keyCode: 81,
+      key: 'Q',
+      name: 'Chord-1',
+      audio: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_1.mp3',
+    },
+    {
+      id: 2,
+      keyCode: 87,
+      key: 'W',
+      name: 'Chord-2',
+      audio: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_2.mp3',
+    },
+    {
+      id: 3,
+      keyCode: 69,
+      key: 'E',
+      name: 'Chord-3',
+      audio: 'https://s3.amazonaws.com/freecodecamp/drums/Chord_3.mp3',
+    },
+    {
+      id: 4,
+      keyCode: 65,
+      key: 'A',
+      name: 'Shaker',
+      audio: 'https://s3.amazonaws.com/freecodecamp/drums/Give_us_a_light.mp3',
+    },
+    {
+      id: 5,
+      keyCode: 83,
+      key: 'S',
+      name: 'Open-HH',
+      audio: 'https://s3.amazonaws.com/freecodecamp/drums/Dry_Ohh.mp3',
+    },
+    {
+      id: 6,
+      keyCode: 68,
+      key: 'D',
+      name: 'Closed-HH',
+      audio: 'https://s3.amazonaws.com/freecodecamp/drums/Bld_H1.mp3',
+    },
+    {
+      id: 7,
+      keyCode: 90,
+      key: 'Z',
+      name: 'Punchy-Kick',
+      audio: 'https://s3.amazonaws.com/freecodecamp/drums/punchy_kick_1.mp3',
+    },
+    {
+      id: 8,
+      keyCode: 88,
+      key: 'X',
+      name: 'Side-Stick',
+      audio: 'https://s3.amazonaws.com/freecodecamp/drums/side_stick_1.mp3',
+    },
+    {
+      id: 9,
+      keyCode: 67,
+      key: 'C',
+      name: 'Snare',
+      audio: 'https://s3.amazonaws.com/freecodecamp/drums/Brk_Snr.mp3',
+    },
+  ];
+  const audioNames = {
+    heaterKit: 'Heater Kit',
+    smoothPianoKit: 'Smooth Piano Kit',
+  };
+  const audioGroups = {
+    heaterKit: drumData,
+    smoothPianoKit: pianoData,
+  };
   const [isPower, setIsPower] = useState(false);
   const handleClick = () => {
     setIsPower((current) => !current);
   };
-  const Keyboard = ({ play }) => {
-    return drumData.map((sound) => {
-      return (
-        <button className="drum-pad" onClick={() => play(sound.key)}>
-          <audio className="clip" id={sound.key} src={sound.audio} />
-          <p>
-            {sound.name} {sound.key}
-          </p>
-        </button>
-      );
+
+  const KeyboardKey = ({ play, sound: { key, audio, name, keyCode } }) => {
+    const handleKeydown = (event) => {
+      if (event.keyCode === keyCode) {
+        play(key);
+      }
+    };
+
+    useEffect(() => {
+      document.addEventListener('keydown', handleKeydown);
     });
+    return (
+      <button className="drum-pad" onClick={() => play(key)}>
+        <audio className="clip" id={key} src={audio} />
+        <p>
+          {name} {key}
+        </p>
+      </button>
+    );
   };
+
+  const Keyboard = ({ play, sounds }) => {
+    return sounds.map((sound) => <KeyboardKey play={play} sound={sound} />);
+  };
+  const [soundType, setSoundType] = useState('heaterKit');
+  const [sounds, setSounds] = useState(audioGroups[soundType]);
+
   const play = (key) => {
     const audio = document.getElementById(key);
     audio.currentTime = 0;
     audio.play();
   };
+
+  const PadControl = ({ changeSounds }) => {
+    <button className="sound-change" onClick={changeSounds}>
+      <p>Change Sound</p>
+    </button>;
+  };
+  const changeSounds = () => {};
   return (
     <div className="App">
       <header>
@@ -159,7 +189,7 @@ function App() {
       </header>
       <div className="container" id="drum-machine">
         <div className="display-pad">
-          <Keyboard play={play} />
+          <Keyboard play={play} sounds={sounds} />
         </div>
         <div className="display-controls">
           <div className="controls-power">
@@ -177,6 +207,10 @@ function App() {
             {/* displays clickable events */}
             <p id="display">Instrument</p>
             <p>instrument played</p>
+          </div>
+          <div className="controls-sound">
+            {/* change sound component */}
+            <PadControl changeSounds={changeSounds} />
           </div>
         </div>
       </div>
