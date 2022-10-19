@@ -143,13 +143,16 @@ function App() {
   const [soundType, setSoundType] = useState('heaterKit');
   const [sounds, setSounds] = useState(audioGroups[soundType]);
   const [isPower, setIsPower] = useState(true);
-  const handleClick = () => {
-    setIsPower((current) => !current);
-  };
   const [soundName, setSoundName] = useState('');
-
+  // TODO - Fix the power button.
   const stop = () => {
     setIsPower(!isPower);
+  };
+  const deactivateAudio = (audio) => {
+    setTimeout(() => {
+      audio.parentElement.style.backgroundColor = '#ffffff';
+      audio.parentElement.style.color = '#000000';
+    }, 300);
   };
   const handleVolumeChange = (e) => {
     setVolume(e.target.value);
@@ -162,11 +165,18 @@ function App() {
       }
     });
   };
-  const KeyboardKey = ({ play, sound: { key, audio, name, keyCode } }) => {
+  const KeyboardKey = ({
+    play,
+    deactivateAudio,
+    sound: { key, audio, name, keyCode },
+  }) => {
     const handleKeydown = (event) => {
       if (event.keyCode === keyCode) {
         play(key, name);
       }
+      const audio = document.getElementById(key);
+      play(key, name);
+      deactivateAudio(audio);
     };
 
     useEffect(() => {
@@ -182,9 +192,25 @@ function App() {
     );
   };
 
-  const Keyboard = ({ play, sounds }) => {
-    return sounds.map((sound) => <KeyboardKey play={play} sound={sound} />);
-  };
+  const Keyboard = ({ play, sounds, power, deactivateAudio }) => (
+    <div className="display-pad">
+      {power
+        ? sounds.map((sound) => (
+            <KeyboardKey
+              sound={sound}
+              play={play}
+              deactivateAudio={deactivateAudio}
+            />
+          ))
+        : sounds.map((sound) => (
+            <KeyboardKey
+              sound={{ ...sound, audio: '#' }}
+              play={play}
+              deactivateAudio={deactivateAudio}
+            />
+          ))}
+    </div>
+  );
 
   const play = (key, sound) => {
     setSoundName(sound);
@@ -220,6 +246,7 @@ function App() {
       setSounds(audioGroups.heaterKit);
     }
   };
+
   return (
     <div className="App">
       {setKeyVolume()}
@@ -228,7 +255,12 @@ function App() {
       </header>
       <div className="container" id="drum-machine">
         <div className="display-pad">
-          <Keyboard play={play} sounds={sounds} />
+          <Keyboard
+            play={play}
+            sounds={sounds}
+            power={isPower}
+            deactivateAudio={deactivateAudio}
+          />
         </div>
         <div className="display-controls">
           <div className="controls-power">
@@ -239,7 +271,6 @@ function App() {
                 className="power-shell-slider"
                 style={{ float: isPower ? 'left' : 'right' }}
                 onClick={() => {
-                  handleClick();
                   stop();
                 }}
               ></div>
@@ -248,7 +279,7 @@ function App() {
           <div className="controls-display">
             {/* displays clickable events */}
             <p>Instrument</p>
-            <p id="display">{soundName || soundName[soundType]}</p>
+            <p id="display">{soundName || audioNames[soundType]}</p>
           </div>
           <div className="controls-sound">
             {/* change sound component */}
@@ -265,85 +296,7 @@ function App() {
 }
 
 export default App;
-// {
-/* <div className="display-pad">
-          {/* all drum pads are clickable events */
-// }
-// {
-/* <div className="drum-pad" id="pad-Q heater-1">
-            <audio
-              src="https://s3.amazonaws.com/freecodecamp/drums/Heater-1.mp3"
-              className="clip"
-              id="Q"
-            ></audio>
-            <p>{drumData[0].name}</p>
-          </div>
-          <div className="drum-pad" id="pad-W heater-2">
-            <audio
-              src="https://s3.amazonaws.com/freecodecamp/drums/Heater-2.mp3"
-              className="clip"
-              id="W"
-            ></audio>
-            "W"
-          </div>
-          <div className="drum-pad" id="pad-E heater-3">
-            <audio
-              src="https://s3.amazonaws.com/freecodecamp/drums/Heater-3.mp3"
-              className="clip"
-              id="E"
-            ></audio>
-            "E"
-          </div>
-          <div className="drum-pad" id="pad-A heater-4">
-            <audio
-              src="https://s3.amazonaws.com/freecodecamp/drums/Heater-4_1.mp3"
-              className="clip"
-              id="A"
-            ></audio>
-            "A"
-          </div>
-          <div className="drum-pad" id="pad-S clap">
-            <audio
-              src="https://s3.amazonaws.com/freecodecamp/drums/Heater-6.mp3"
-              className="clip"
-              id="S"
-            ></audio>
-            "S"
-          </div>
-          <div className="drum-pad" id="pad-D open-HH">
-            <audio
-              src="https://s3.amazonaws.com/freecodecamp/drums/Dsc_Oh.mp3"
-              className="clip"
-              id="D"
-            ></audio>
-            "D"
-          </div>
-          <div className="drum-pad" id="pad-Z kick-h">
-            <audio
-              src="https://s3.amazonaws.com/freecodecamp/drums/Kick_n_Hat.mp3"
-              className="clip"
-              id="Z"
-            ></audio>
-            "Z"
-          </div>
-          <div className="drum-pad" id="pad-X kick">
-            <audio
-              src="https://s3.amazonaws.com/freecodecamp/drums/RP4_KICK_1.mp3"
-              className="clip"
-              id="X"
-            ></audio>
-            "X"
-          </div>
-          <div className="drum-pad" id="pad-C closed-HH">
-            <audio
-              src="https://s3.amazonaws.com/freecodecamp/drums/Cev_H2.mp3"
-              className="clip"
-              id="C"
-            ></audio>
-            "C"
-          </div>
-        </div> */
-// }
+
 // User Story #1: I should be able to see an outer container with a corresponding id="drum-machine" that contains all other elements.
 
 // User Story #2: Within #drum-machine I can see an element with a corresponding id="display".
