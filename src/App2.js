@@ -132,29 +132,165 @@ const pianoData = [
   },
 ];
 
-const Keyboard = ({ play }) => {
-  return drumData.map(({ key, url }) => {
-    return (
-      <button classname="drum-pad" onClick={() => play(key)}>
-        <audio id={key} classname="clip" src={url} />
-        {key}
-      </button>
-    );
-  });
+const soundsName = {
+  heaterKit: 'Heater Kit',
+  smoothPianoKit: 'Smooth Piano Kit',
 };
 
-function App2() {
-  const play = (key) => {
+const soundsData = {
+  heaterKit: drumData,
+  smoothPianoKit: pianoData,
+};
+
+const KeyboardKey = ({
+  play,
+  deactivateAudio,
+  sound: { key, url, keyCode, place, id },
+}) => {
+  const handleKeydown = (e) => {
+    if (e.keyCode === keyCode) {
+      const audio = document.getElementById(key);
+      play(key, id);
+      deactivateAudio(audio);
+    }
+  };
+
+  React.useEffect(() => {
+    document.addEventListener('keydown', handleKeydown);
+  });
+
+  return (
+    <button className="drum-pad" id={place} onClick={() => play(key, id)}>
+      <audio id={key} className="clip" src={url} />
+      {key}
+    </button>
+  );
+};
+
+const Keyboard = ({ power, play, sounds, deactivateAudio }) => (
+  <div className="board">
+    {power
+      ? sounds.map((sound) => (
+          <KeyboardKey
+            play={play}
+            sound={sound}
+            deactivateAudio={deactivateAudio}
+          />
+        ))
+      : sounds.map((sound) => (
+          <KeyboardKey
+            play={play}
+            sound={{ ...sound, url: '#' }}
+            deactivateAudio={deactivateAudio}
+          />
+        ))}
+  </div>
+);
+
+const PadControl = ({
+  stopPower,
+  name,
+  power,
+  volume,
+  handleVolumeChange,
+  changeData,
+}) => (
+  <div className="controls">
+    <button onClick={stopPower}>Power: {power ? 'Off' : 'On'}</button>
+    <h2>Volume:{Math.round(volume * 100)}</h2>
+    <input
+      max="1"
+      min="0"
+      step="0.01"
+      type="range"
+      value={volume}
+      onChange={handleVolumeChange}
+    />
+    <h2 id="display">{name}</h2>
+    <button onClick={changeData}>Change Instrument</button>
+  </div>
+);
+
+const App2 = () => {
+  const [power, setPower] = React.useState(true);
+  const [volume, setVolume] = React.useState(1);
+  const [soundName, setSoundName] = React.useState('');
+  const [soundType, setSoundType] = React.useState('heaterKit');
+  const [sounds, setSounds] = React.useState(soundsData[soundType]);
+
+  const stopPower = () => {
+    setPower(!power);
+  };
+
+  const handleVolumeChange = (e) => {
+    setVolume(e.target.value);
+  };
+
+  const styleActiveKey = (audio) => {
+    audio.parentElement.style.backgroundColor = '#000000';
+    audio.parentElement.style.color = '#ffffff';
+  };
+
+  // const deActivatedKey = (audio) => {
+  //   audio.parentElement.style.backgroundColor = '#ffffff';
+  //   audio.parentElement.style.color = '#000000';
+  // };
+
+  const deactivateAudio = (audio) => {
+    setTimeout(() => {
+      audio.parentElement.style.backgroundColor = '#ffffff';
+      audio.parentElement.style.color = '#000000';
+    }, 300);
+  };
+
+  const play = (key, sound) => {
+    setSoundName(sound);
     const audio = document.getElementById(key);
+    styleActiveKey(audio);
     audio.currentTime = 0;
     audio.play();
+    deactivateAudio(audio);
   };
+
+  const changeData = () => {
+    setSoundName('');
+    if (soundType === 'heaterKit') {
+      setSoundType('smoothPianoKit');
+      setSounds(soundsData.smoothPianoKit);
+    } else {
+      setSoundType('heaterKit');
+      setSounds(soundsData.heaterKit);
+    }
+  };
+  const setKeyVolume = () => {
+    const audios = sounds.map((sound) => document.getElementById(sound.key));
+    audios.forEach((audio) => {
+      if (audio) {
+        audio.volume = volume;
+      }
+    });
+  };
+
   return (
     <div id="drum-machine">
-      <div id="display">
-        <Keyboard play={play} />
+      {setKeyVolume()}
+      <div className="container">
+        <Keyboard
+          power={power}
+          play={play}
+          sounds={sounds}
+          deactivateAudio={deactivateAudio}
+        />
+        <PadControl
+          stopPower={stopPower}
+          power={power}
+          volume={volume}
+          handleVolumeChange={handleVolumeChange}
+          name={soundName || soundsName[soundType]}
+          changeData={changeData}
+        />
       </div>
     </div>
   );
-}
+};
 export default App2;
