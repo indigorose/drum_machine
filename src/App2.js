@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-// import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 const drumData = [
   {
     place: 1,
@@ -155,7 +155,7 @@ const KeyboardKey = ({
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     document.addEventListener('keydown', handleKeydown);
   });
 
@@ -197,6 +197,7 @@ const PadControl = ({
 }) => (
   <div className="controls">
     <button onClick={stopPower}>Power: {power ? 'Off' : 'On'}</button>
+    <div className="controls-light"></div>
     <h2>Volume:{Math.round(volume * 100)}</h2>
     <input
       max="1"
@@ -212,11 +213,11 @@ const PadControl = ({
 );
 
 const App2 = () => {
-  const [power, setPower] = React.useState(true);
-  const [volume, setVolume] = React.useState(1);
-  const [soundName, setSoundName] = React.useState('');
-  const [soundType, setSoundType] = React.useState('heaterKit');
-  const [sounds, setSounds] = React.useState(soundsData[soundType]);
+  const [power, setPower] = useState(true);
+  const [volume, setVolume] = useState(1);
+  const [soundName, setSoundName] = useState('');
+  const [soundType, setSoundType] = useState('heaterKit');
+  const [sounds, setSounds] = useState(soundsData[soundType]);
 
   const stopPower = () => {
     setPower(!power);
